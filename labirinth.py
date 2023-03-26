@@ -82,6 +82,7 @@ class LabirinthGrid(Grid):
         self._route: Dict[LabirinthCell, LabirinthCell | None] = {self[0][0]:None}
         self._current_route: set[LabirinthCell] = set()
         self._route_generator = self.route_generator()
+        self._current_route_generator = None
 
     def set_random_walls(self, wall_percent:float):
         for top in range(len(self)):
@@ -141,17 +142,26 @@ class LabirinthGrid(Grid):
             path_segment.is_route = True
             self._current_route.add(path_segment)
             path_segment = self._route[path_segment]
+            yield
+
 
     def draw(self):
 
         super().draw()
 
-        self.clear_previous_route()
+        next_vertex = None
+
         try:
-            next_vertex = self._route_generator.__next__()
-        except StopIteration:
-            pass
-        self.update_current_route(next_vertex)
+            self._current_route_generator.__next__()
+        except:
+            try:
+                next_vertex = self._route_generator.__next__()
+            except StopIteration:
+                pass
+            self.clear_previous_route()
+            self._current_route_generator = self.update_current_route(next_vertex)
+            self._current_route_generator.__next__()
+
 
 class LabirinthFrame(Frame):
 

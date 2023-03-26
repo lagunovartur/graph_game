@@ -19,7 +19,7 @@ class Grid(BaseModel):
     WALL_PERCENT:int = 20
 
 class Settings(BaseModel):
-    FPS:int = 1
+    FPS:int = 20
     display: Display = Display()
     cell: Cell = Cell()
     grid = Grid(**{"WIDTH": display.WIDTH // cell.SIZE, "HEIGHT": display.HEIGHT // cell.SIZE})
